@@ -9,7 +9,7 @@ courseRouter.post('/purchase',function(req,res){
 })
 
 
-courseRouter.post('/preview',function(req,res){
+courseRouter.get('/preview',function(req,res){
     res.json({
         message:"Course preview End point"
     })

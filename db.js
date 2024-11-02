@@ -17,7 +17,7 @@ const userSchema = new Schema({
 
 const adminSchema = new Schema({
     id:ObjectId,
-    email:String,
+    email:{type:string , unique:true},
     password:String,
     firstName:String,
     lastName:String
@@ -27,7 +27,7 @@ const adminSchema = new Schema({
 const courseSchema = new Schema({
 
     id:ObjectId,
-    title:String,
+    email:{type:string , unique:true},
     description:String,
     imageUrl:String,
     price:Number,
