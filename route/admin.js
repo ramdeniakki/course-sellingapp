@@ -2,8 +2,8 @@ const Router = require('express')
 const adminRouter =  Router();
 const jwt = require('jsonwebtoken')
 const {JWT_ADMIN_PASSOWORDKEY} = require('../config')
-const {adminModel} = require('../db')
-
+const {adminModel, courseModel} = require('../db')
+const {adminMiddleware} = require('../middlewares/admin');
 adminRouter.post('/signup',async function(req,res){
   const {email,password,firstName,lastName} = req.body
 
@@ -42,10 +42,17 @@ adminRouter.post('/signin', async function(req,res){
    
 })
 
-adminRouter.put('/',function(req,res){
-    res.json({
-        message:"Admin course end point"
+adminRouter.post('/course', adminMiddleware, async function(req,res){
+    const adminId = req.userId;
+    const {title,description,imageUrl,price,creatorId} = req.body
+    await courseModel.create({
+        title,description,imageUrl,price,creatorId:adminId
     })
+    res.json({
+        message:"Course Created",
+        creatorId:adminId
+    })
+    
 })
 adminRouter.get('/',function(req,res){
     res.json({
