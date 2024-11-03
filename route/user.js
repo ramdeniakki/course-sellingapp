@@ -1,53 +1,75 @@
-const Router = require('express')
-const userRouter = Router()
-const {userModel} = require('../db')
-const jwt = require('jsonwebtoken')
-const {JWT_USER_PASSOWORDKEY} = require('../config')
+const { Router } = require("express");
+const { userModel, purchaseModel, courseModel } = require("../db");
+const jwt = require("jsonwebtoken");
+const  { JWT_USER_PASSWORD } = require("../config");
+const { userMiddleware } = require("../middlewares/user");
 
-userRouter.post('/signup',async function(req,res){
-    const {email,password,firstName,lastName} = req.body;
+const userRouter = Router();
 
+userRouter.post("/signup", async function(req, res) {
+    const { email, password, firstName, lastName } = req.body; 
+    
     await userModel.create({
-        email:email,
-        password:password,
-        firstName:firstName,
-        lastName:lastName
+        email: email,
+        password: password,
+        firstName: firstName, 
+        lastName: lastName
     })
+    
     res.json({
-        message:"Successfully Signuped dude"
+        message: "Signup succeeded"
     })
 })
 
-userRouter.post('/signin', async function(req,res){
-    const {email,password} = req.body;
-    const response = await userModel.findOne({
-        email:email,
-        password:password
-    })
+userRouter.post("/signin",async function(req, res) {
+    const { email, password } = req.body;
 
-    if(response){
+   
+    const user = await userModel.findOne({
+        email: email,
+        password: password
+    });
+
+    if (user) {
         const token = jwt.sign({
-            id:response._id.toString()
-        },JWT_USER_PASSOWORDKEY)
+            id: user._id,
+        }, JWT_USER_PASSWORD);
+
+      
+
         res.json({
-            token:token
+            token: token
         })
-    }else{
+    } else {
         res.status(403).json({
-            message:"Invalid Token"
+            message: "Incorrect credentials"
         })
     }
-   
-   
 })
 
-userRouter.post('/purchase',function(req,res){
+userRouter.get("/purchases", userMiddleware, async function(req, res) {
+    const userId = req.userId;
+
+    const purchases = await purchaseModel.find({
+        userId,
+    });
+
+    let purchasedCourseIds = [];
+
+    for (let i = 0; i<purchases.length;i++){ 
+        purchasedCourseIds.push(purchases[i].courseId)
+    }
+
+    const coursesData = await courseModel.find({
+        _id: { $in: purchasedCourseIds }
+    })
+
     res.json({
-        message:"Course endpoint"
+        purchases,
+        coursesData
     })
 })
 
-
 module.exports = {
-    userRouter:userRouter
+    userRouter: userRouter
 }

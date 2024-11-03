@@ -1,18 +1,21 @@
-const { JWT_ADMIN_PASSOWORDKEY, JWT_USER_PASSOWORDKEY } = require("../config")
+const jwt = require("jsonwebtoken");
+const { JWT_USER_PASSWORD } = require("../config");
 
-function userMiddleWare(req,res,next){
-    const token = req.headers.token
-    const decodedToken = jwt.verify(token,JWT_USER_PASSOWORDKEY);
-    if(decodedToken){
-     req.userId = decodedToken.id
-     next(); 
-    }else{
+function userMiddleware(req, res, next) {
+    const token = req.headers.token;
+    const decoded = jwt.verify(token, JWT_USER_PASSWORD);
+
+    if (decoded) {
+        req.userId = decoded.id;
+        next()
+    } else {
         res.status(403).json({
-            message:"you are not signed in"
+            message: "You are not signed in"
         })
     }
- } 
 
- module.exports = {
-    userMiddleWare:userMiddleWare
- }
+}
+
+module.exports = {
+    userMiddleware: userMiddleware
+}
