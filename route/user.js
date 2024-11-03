@@ -2,7 +2,8 @@ const Router = require('express')
 const userRouter = Router()
 const {userModel} = require('../db')
 const jwt = require('jsonwebtoken')
-const JWT_USER_PASSOWORDKEY = "testing_marco_dev_json_epic"
+const {JWT_USER_PASSOWORDKEY} = require('../config')
+
 userRouter.post('/signup',async function(req,res){
     const {email,password,firstName,lastName} = req.body;
 
