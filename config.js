@@ -1,5 +1,5 @@
-const JWT_ADMIN_PASSOWORDKEY = 'tesing)detb:aojd;'
-const JWT_USER_PASSOWORDKEY = "testing_marco_dev_json_epic"
+const JWT_ADMIN_PASSOWORDKEY = process.env.JWT_ADMIN_PASSOWORDKEY
+const JWT_USER_PASSOWORDKEY = process.env.JWT_USER_PASSOWORDKEY
 
 module.exports = {
     JWT_ADMIN_PASSOWORDKEY,JWT_USER_PASSOWORDKEY
