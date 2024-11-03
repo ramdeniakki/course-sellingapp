@@ -1,18 +1,45 @@
 const Router = require('express')
 const adminRouter =  Router();
-
+const jwt = require('jsonwebtoken')
+const JWT_ADMIN_PASSOWORDKEY = 'tesing)detb:aojd;'
 const {adminModel} = require('../db')
 
-adminRouter.post('/signup',function(req,res){
-    res.json({
-        message:"admin signup successful"
-    })
+adminRouter.post('/signup',async function(req,res){
+  const {email,password,firstName,lastName} = req.body
+
+   await adminModel.create({
+    email:email,
+    password:password,
+    firstName:firstName,
+    lastName:lastName
+  })
+  res.json({
+    message:"Admin Signup Successful"
+  })
 })
 
-adminRouter.post('/signin',function(req,res){
-    res.json({
-        message:"admin signin Successful"
+adminRouter.post('/signin', async function(req,res){
+
+    const {email,password} = req.body;
+
+    const admin = await adminModel.findOne({
+        email:email,
+        password:password
     })
+
+    if(admin){
+      const token = jwt.sign({
+            id:admin._id.toString()
+        },JWT_ADMIN_PASSOWORDKEY)
+        res.json({
+            token:token
+        })
+    }else{
+        res.status(403).json({
+            message:"Invalid Token"
+        })
+    }
+   
 })
 
 adminRouter.put('/',function(req,res){

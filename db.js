@@ -3,11 +3,10 @@ const { string } = require('zod');
 const Schema = mongoose.Schema;
 const ObjectId = mongoose.ObjectId;
 
-mongoose.connect("mongodb+srv://admin:admin%400701@cluster0.xujxl.mongodb.net/Course-selling-app-database");
 
 const userSchema = new Schema({
     id:ObjectId,
-    email:String,
+    email:{type:String,unique:true},
     password:String,
     firstName:String,
     lastName:String
@@ -17,7 +16,7 @@ const userSchema = new Schema({
 
 const adminSchema = new Schema({
     id:ObjectId,
-    email:{type:string , unique:true},
+    email: {type:String,unique:true},
     password:String,
     firstName:String,
     lastName:String
@@ -27,7 +26,6 @@ const adminSchema = new Schema({
 const courseSchema = new Schema({
 
     id:ObjectId,
-    email:{type:string , unique:true},
     description:String,
     imageUrl:String,
     price:Number,
